@@ -9,8 +9,9 @@ const speechInput = document.getElementById("speech-input");
 // Function to clear the text box every 1.5 seconds
 function clearInputPeriodically() {
   setInterval(() => {
+    console.log("clearing input box")
     speechInput.value = ""; // Clear input field
-  }, 1500); // Interval of 1.5 seconds
+  }, 1000); // Interval of 1.5 seconds
 }
 
 // Function to prompt the next word
