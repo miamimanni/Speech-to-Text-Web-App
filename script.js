@@ -1,61 +1,40 @@
-const words = ["apple", "banana", "cherry", "date", "fig"]; // Hardcoded words
+// Hardcoded words
+const words = ["example", "apple", "banana", "cherry"];
 let currentWordIndex = 0;
 
-const wordPrompt = document.getElementById("word-prompt");
-const feedback = document.getElementById("feedback");
+// Get elements
+const wordPrompt = document.getElementById("word");
 const startButton = document.getElementById("start-button");
-const speechInput = document.getElementById("speech-input");
+const result = document.getElementById("result");
 
-// Function to clear the text box every 1.5 seconds
-function clearInputPeriodically() {
-  setInterval(() => {
-    // console.log("clearing input box")
-    speechInput.value = ""; // Clear input field
-  }, 250); // Interval
+// Display the first word
+wordPrompt.textContent = words[currentWordIndex];
+
+// Set up speech recognition
+const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+if (SpeechRecognition) {
+  const recognition = new SpeechRecognition();
+  recognition.lang = "en-US";
+
+  startButton.addEventListener("click", () => {
+    result.textContent = "Listening...";
+    recognition.start();
+  });
+
+  recognition.onresult = (event) => {
+    const spokenWord = event.results[0][0].transcript.toLowerCase();
+    if (spokenWord === words[currentWordIndex]) {
+      result.textContent = `Correct! You said "${spokenWord}".`;
+      currentWordIndex = (currentWordIndex + 1) % words.length; // Move to the next word
+      wordPrompt.textContent = words[currentWordIndex];
+    } else {
+      result.textContent = `Incorrect. You said "${spokenWord}". Try again!`;
+    }
+  };
+
+  recognition.onerror = (event) => {
+    result.textContent = `Error: ${event.error}`;
+  };
+} else {
+  result.textContent = "Speech recognition is not supported on this device.";
 }
-
-// Function to prompt the next word
-function nextWord() {
-  if (currentWordIndex < words.length) {
-    const word = words[currentWordIndex];
-    wordPrompt.textContent = `Say the word: "${word}"`;
-    feedback.textContent = "";
-    speechInput.value = ""; // Clear input field
-    speechInput.focus(); // Ensure it captures input
-  } else {
-    wordPrompt.textContent = "You've completed all words!";
-    feedback.textContent = "Great job!";
-    startButton.textContent = "Restart";
-    startButton.style.display = "inline-block";
-    currentWordIndex = 0; // Reset for next session
-  }
-}
-
-// Event listener for start button
-startButton.addEventListener("click", () => {
-  startButton.style.display = "none";
-  nextWord();
-});
-
-// Triggered when the user finishes speaking
-speechInput.addEventListener("input", () => {
-  const userInput = speechInput.value.trim().toLowerCase();
-  const targetWord = words[currentWordIndex].toLowerCase();
-
-  if(userInput.value.length != targetWord.value.length){
-    speechInput.value = ""
-  }
-
-  if (userInput === targetWord) {
-    feedback.textContent = "Correct! ✅";
-    feedback.style.color = "green";
-    currentWordIndex++;
-    setTimeout(nextWord, 2000); // Move to next word after 2 seconds
-  } else {
-    feedback.textContent = "Try again! ❌";
-    feedback.style.color = "red";
-  }
-});
-
-// Start clearing the input field every 1.5 seconds
-clearInputPeriodically();
