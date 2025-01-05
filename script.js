@@ -9,7 +9,7 @@ const speechInput = document.getElementById("speech-input");
 // Function to clear the text box every 1.5 seconds
 function clearInputPeriodically() {
   setInterval(() => {
-    console.log("clearing input box")
+    // console.log("clearing input box")
     speechInput.value = ""; // Clear input field
   }, 250); // Interval
 }
@@ -41,6 +41,10 @@ startButton.addEventListener("click", () => {
 speechInput.addEventListener("input", () => {
   const userInput = speechInput.value.trim().toLowerCase();
   const targetWord = words[currentWordIndex].toLowerCase();
+
+  if(userInput.value.length != targetWord.value.length){
+    speechInput.value = ""
+  }
 
   if (userInput === targetWord) {
     feedback.textContent = "Correct! ✅";
