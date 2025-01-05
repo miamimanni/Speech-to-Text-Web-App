@@ -6,6 +6,14 @@ const feedback = document.getElementById("feedback");
 const startButton = document.getElementById("start-button");
 const speechInput = document.getElementById("speech-input");
 
+// Function to clear the text box every 1.5 seconds
+function clearInputPeriodically() {
+  setInterval(() => {
+    speechInput.value = ""; // Clear input field
+  }, 1500); // Interval of 1.5 seconds
+}
+
+// Function to prompt the next word
 function nextWord() {
   if (currentWordIndex < words.length) {
     const word = words[currentWordIndex];
@@ -22,6 +30,7 @@ function nextWord() {
   }
 }
 
+// Event listener for start button
 startButton.addEventListener("click", () => {
   startButton.style.display = "none";
   nextWord();
@@ -42,3 +51,6 @@ speechInput.addEventListener("input", () => {
     feedback.style.color = "red";
   }
 });
+
+// Start clearing the input field every 1.5 seconds
+clearInputPeriodically();
